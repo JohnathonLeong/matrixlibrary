@@ -21,6 +21,11 @@
  *                                        matrixlibrarycelloperations, and
  *                                        matrixlibrarymaths
  *
+ * Version:     1.0.1
+ * Date:        2021/07/30 (YYYY/MM/DD)
+ * Change Log:  1. Modified the "matrixDecompositionQR" function to compute the QR for non squared
+ *                 matrix.
+ *
  * Version:     1.0.0
  * Date:        2021/07/28 (YYYY/MM/DD)
  * Change Log:  1. Implemented first release version of matrixlibrarydecomposition.
@@ -37,27 +42,17 @@
  * @param R                     - Resultant R matrix.
  */
 void matrixDecompositionQR(const matrix & X, matrix & Q, matrix & R) {
-  unsigned long RIndex = 0;
-
   matrix M = X;
+  Q.resizeClear(X.getRowSize(), X.getRowSize());
+  R.resizeClear(X.getRowSize(), X.getColSize());
 
-  R.resizeClear(M.getRowSize(), M.getColSize());
-  Q.resizeClear(M.getRowSize(), M.getColSize());
+  for (unsigned long i = 1; i <= X.getColSize(); i++) {
+    R(i, i) = matrixMathsVectorSquareRoot(M(1, X.getRowSize(), i, i));
+    Q(1, i, M(1, X.getRowSize(), i, i) / R(i, i));
 
-  for (unsigned long i = 1; i <= M.getColSize(); i++) {
-    double VectorMag = matrixMathsVectorSquareRoot(M(1, M.getColSize(), i, i));
-
-    R.mMat[RIndex] = VectorMag;
-    Q(1, i, M(1, M.getRowSize(), i, i) / VectorMag);
-
-    matrix QV = Q(1, Q.getRowSize(), i, i);
-    for (unsigned long j = i + 1; j <= M.getColSize(); j++) {
-      R(i, j) = matrixMathsVectorSum(matrixCellOperationsMultiply(QV, M(1, M.getRowSize(), j, j)));
-      M(1, j, M(1, M.getRowSize(), j, j) - Q(1, Q.getRowSize(), i, i) * R(i, j));
+    for (unsigned long j = i + 1; j <= X.getColSize(); j++) {
+      R(i, j) = matrixMathsVectorSum(matrixCellOperationsMultiply(Q(1, X.getRowSize(), i, i), M(1, X.getRowSize(), j, j)));
+      M(1, j, M(1, X.getRowSize(), j, j) - Q(1, X.getRowSize(), i, i) * R(i, j));
     }
-
-    RIndex += M.getColSize() + 1;
   }
-
-  matrixPrint(M, "M");
 }
