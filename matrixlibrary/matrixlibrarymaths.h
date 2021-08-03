@@ -19,6 +19,15 @@
  *
  * Note:        To be used together with matrixlibrary.
  *
+ * Version:     1.0.2
+ * Date:        2021/08/04 (YYYY/MM/DD)
+ * Change Log:  1. Updated the following functions
+ *                   "matrixMathsAbsMax()"
+ *                   "matrixMathsAbsMin()"
+ *                   "matrixMathsMax()"
+ *                   "matrixMathsMin()"
+ *                 such that user can choose the return indicator matrix type.
+ *
  * Version:     1.0.1
  * Date:        2021/08/03 (YYYY/MM/DD)
  * Change Log:  1. Added the function "matrixMathsAbsMax()".
@@ -44,14 +53,14 @@
  * @param direction         - Defines the direction of the vector;
  *                            0 -> column vector
  *                            1 -> row vector
- * @return                  - The location of the absolutemaximum value of the vector, indicated by
+ * @return                  - The location of the absolute maximum value of the vector, indicated by
  *                            value 1.
  *                            The position will take the first occurance of the absolute maximum
  *                            value in the order from top-to-bottom if the direction is set to 0.
  *                            The position will take the first occurance of the absolute maximum
  *                            value in the order from left-to-right if the direction is set to 1.
  */
-matrix matrixMathsAbsMax(const matrix & X, matrix & Z, unsigned char direction = 0);
+matrix matrixMathsAbsMax(const matrix & X, matrix & Z, unsigned char indicatorType = 0, unsigned char direction = 0);
 
 /**
  * @brief matrixMathsAbsMin - Finds the absolute minimum value for each of the vector of the matrix.
@@ -61,14 +70,14 @@ matrix matrixMathsAbsMax(const matrix & X, matrix & Z, unsigned char direction =
  * @param direction         - Defines the direction of the vector;
  *                            0 -> column vector
  *                            1 -> row vector
- * @return                  - The location of the absoluteminimum value of the vector, indicated by
+ * @return                  - The location of the absolute minimum value of the vector, indicated by
  *                            value 1.
  *                            The position will take the first occurance of the absolute minimum
  *                            value in the order from top-to-bottom if the direction is set to 0.
  *                            The position will take the first occurance of the absolute minimum
  *                            value in the order from left-to-right if the direction is set to 1.
  */
-matrix matrixMathsAbsMin(const matrix & X, matrix & Z, unsigned char direction = 0);
+matrix matrixMathsAbsMin(const matrix & X, matrix & Z, unsigned char indicatorType = 0, unsigned char direction = 0);
 
 /**
  * @brief matrixMathsCumulativeSum - Computes the cumulative sum for each of the vector of the
@@ -82,8 +91,8 @@ matrix matrixMathsAbsMin(const matrix & X, matrix & Z, unsigned char direction =
 matrix matrixMathsCumulativeSum(const matrix & X, unsigned char direction = 0);
 
 /**
- * @brief matrixMathsMax - Finds the maximum value for each of the vector of the matrix. The vector
- *                         direction is defined by the input argument.
+ * @brief matrixMathsMax - Finds the maximum value for each of the vector of the matrix.
+ *                         The vector direction is defined by the input argument.
  * @param X              - The matrix whose maximum value is to be determined.
  * @param Z              - The resultant maximum value vector matrix.
  * @param direction      - Defines the direction of the vector;
@@ -95,11 +104,11 @@ matrix matrixMathsCumulativeSum(const matrix & X, unsigned char direction = 0);
  *                         The position will take the first occurance of the maximum value in the
  *                         order from left-to-right if the direction is set to 1.
  */
-matrix matrixMathsMax(const matrix & X, matrix & Z, unsigned char direction = 0);
+matrix matrixMathsMax(const matrix & X, matrix & Z, unsigned char indicatorType = 0, unsigned char direction = 0);
 
 /**
- * @brief matrixMathsMin - Finds the minimum value for each of the vector of the matrix. The vector
- *                         direction is defined by the input argument.
+ * @brief matrixMathsMin - Finds the minimum value for each of the vector of the matrix.
+ *                         The vector direction is defined by the input argument.
  * @param X              - The matrix whose minimum value is to be determined.
  * @param Z              - The resultant minimum value vector matrix.
  * @param direction      - Defines the direction of the vector;
@@ -111,7 +120,7 @@ matrix matrixMathsMax(const matrix & X, matrix & Z, unsigned char direction = 0)
  *                         The position will take the first occurance of the minimum value in the
  *                         order from left-to-right if the direction is set to 1.
  */
-matrix matrixMathsMin(const matrix & X, matrix & Z, unsigned char direction = 0);
+matrix matrixMathsMin(const matrix & X, matrix & Z, unsigned char indicatorType = 0, unsigned char direction = 0);
 
 /**
  * @brief matrixMathsRootMeanSquare - Computes the root mean square for each of the vector of the
