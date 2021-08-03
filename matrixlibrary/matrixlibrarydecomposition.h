@@ -21,6 +21,10 @@
  *                                        matrixlibrarycelloperations, and
  *                                        matrixlibrarymaths
  *
+ * Version:     1.0.2
+ * Date:        2021/08/04 (YYYY/MM/DD)
+ * Change Log:  1. Added the function "matrixDecompositionLU()".
+ *
  * Version:     1.0.1
  * Date:        2021/07/30 (YYYY/MM/DD)
  * Change Log:  1. Modified the "matrixDecompositionQR" function to compute the QR for non squared
@@ -35,6 +39,15 @@
 #define MATRIXLIBRARYDECOMPOSITION_H
 
 #include "matrixlibrary.h"
+
+/**
+ * @brief matrixDecompositionLU - LU decomposition.
+ * @param X                     - Matrix for LU decomposition.
+ * @param L                     - Resultant L matrix.
+ * @param U                     - Resultant U matrix.
+ * @return                      - Returns the pivot matrix.
+ */
+matrix matrixDecompositionLU(const matrix &X, matrix & L, matrix & U);
 
 /**
  * @brief matrixDecompositionQR - QR decomposition.

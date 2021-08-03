@@ -21,6 +21,10 @@
  *                                        matrixlibrarycelloperations, and
  *                                        matrixlibrarymaths
  *
+ * Version:     1.0.2
+ * Date:        2021/08/04 (YYYY/MM/DD)
+ * Change Log:  1. Added the function "matrixDecompositionLU()".
+ *
  * Version:     1.0.1
  * Date:        2021/07/30 (YYYY/MM/DD)
  * Change Log:  1. Modified the "matrixDecompositionQR" function to compute the QR for non squared
@@ -34,6 +38,56 @@
 #include "matrixlibrarydecomposition.h"
 #include "matrixlibrarycelloperations.h"
 #include "matrixlibrarymaths.h"
+
+/**
+ * @brief matrixDecompositionLU - LU decomposition.
+ * @param X                     - Matrix for LU decomposition.
+ * @param L                     - Resultant L matrix.
+ * @param U                     - Resultant U matrix.
+ * @return                      - Returns the pivot matrix.
+ */
+matrix matrixDecompositionLU(const matrix &X, matrix & L, matrix & U) {
+  matrix R = X;
+  matrix T1, T2, T3;
+  matrix P = matrixIdentity(X.getRowSize(), X.getColSize());
+
+  L = matrixIdentity(X.getRowSize(), X.getColSize());
+  U.resizeClear(X.getRowSize(), X.getColSize());
+
+  double temp = 0;
+  for (unsigned long i = 1; i <= X.getRowSize(); i++) {
+
+    // perform LU decomposition pivoting
+    T1 = R(i, X.getRowSize(), 1, X.getColSize());
+    T3 = matrixMathsAbsMax(T1, T2);
+    R = matrixCellOperationsSwapRows(R, i, T3(1, i) + (1 * (i-1)));
+    P = matrixCellOperationsSwapRows(P, i, T3(1, i) + (1 * (i-1)));
+
+    // compute LU decomposition
+    for (unsigned long j = 1; j <= X.getColSize(); j++) {
+      temp = 0;
+
+      // check for lower triangle matrix indices
+      if (j < i) {
+        for (unsigned long k = 1; k <= X.getColSize(); k++)
+          temp += L(i, k) * U(k, j);
+        // determine L elements
+        L(i, j) = (R(i, j) - temp) / U(j, j);
+      }
+
+      temp = 0;
+      // check for upper triangle matrix indices
+      if (j >= i) {
+        for (unsigned long k = 1; k <= X.getColSize(); k++)
+          temp += L(i, k) * U(k, j);
+        // determine U elements
+        U(i, j) = (R(i, j) - temp) / L(i, i);
+      }
+    }
+  }
+
+  return P;
+}
 
 /**
  * @brief matrixDecompositionQR - QR decomposition.
@@ -56,3 +110,4 @@ void matrixDecompositionQR(const matrix & X, matrix & Q, matrix & R) {
     }
   }
 }
+
