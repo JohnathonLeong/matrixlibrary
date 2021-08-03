@@ -19,6 +19,11 @@
  *
  * Note:        To be used together with matrixlibrary.
  *
+ * Version:     1.0.1
+ * Date:        2021/08/03 (YYYY/MM/DD)
+ * Change Log:  1. Added the function "matrixCellOperationsSwapCols()".
+ *              2. Added the function "matrixCellOperationsSwapRows()".
+ *
  * Version:     1.0.0
  * Date:        2021/07/28 (YYYY/MM/DD)
  * Change Log:  1. Implemented first release version of matrixlibrarycelloperations.
@@ -44,5 +49,23 @@ matrix matrixCellOperationsDivide(const matrix & X, const matrix & Y);
  * @return                             - Resultant matrix.
  */
 matrix matrixCellOperationsMultiply(const matrix & X, const matrix & Y);
+
+/**
+ * @brief matrixCellOperationsSwapCols - Swap the elements of two columns.
+ * @param X                            - The matrix whose columns are to be swapped.
+ * @param col1                         - Index of the first column to be swapped.
+ * @param col2                         - Index of the second column to be swapped.
+ * @return
+ */
+matrix matrixCellOperationsSwapCols(const matrix & X, unsigned long col1, unsigned long col2);
+
+/**
+ * @brief matrixCellOperationsSwapRows - Swap the elements of two rows.
+ * @param X                            - The matrix whose rows are to be swapped.
+ * @param col1                         - Index of the first row to be swapped.
+ * @param col2                         - Index of the second row to be swapped.
+ * @return
+ */
+matrix matrixCellOperationsSwapRows(const matrix & X, unsigned long row1, unsigned long row2);
 
 #endif // MATRIXLIBRARYCELLOPERATIONS_H
