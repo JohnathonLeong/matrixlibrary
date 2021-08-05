@@ -21,13 +21,20 @@
  *                                        matrixlibrarycelloperations, and
  *                                        matrixlibrarymaths
  *
+ * Version:     1.0.3
+ * Date:        2021/08/05 (YYYY/MM/DD)
+ * Change Log:  1. Improved the function "matrixDecompositionLU()" to allow decomposition of non
+ *                 sqaure matrix.
+ *              2. Resolve a bug when perfomring matrixDecompositionQR()" on a [M x N] non square
+ *                 matrix where M < N.
+ *
  * Version:     1.0.2
  * Date:        2021/08/04 (YYYY/MM/DD)
  * Change Log:  1. Added the function "matrixDecompositionLU()".
  *
  * Version:     1.0.1
  * Date:        2021/07/30 (YYYY/MM/DD)
- * Change Log:  1. Modified the "matrixDecompositionQR" function to compute the QR for non squared
+ * Change Log:  1. Modified the "matrixDecompositionQR" function to compute the QR for non square
  *                 matrix.
  *
  * Version:     1.0.0
@@ -38,6 +45,7 @@
 #include "matrixlibrarydecomposition.h"
 #include "matrixlibrarycelloperations.h"
 #include "matrixlibrarymaths.h"
+#include <stdio.h>
 
 /**
  * @brief matrixDecompositionLU - LU decomposition.
@@ -47,29 +55,43 @@
  * @return                      - Returns the pivot matrix.
  */
 matrix matrixDecompositionLU(const matrix &X, matrix & L, matrix & U) {
+
+  unsigned long XSizeCol = X.getColSize();
+  unsigned long XSizeRow = X.getRowSize();
+
   matrix R = X;
   matrix T1, T2, T3;
-  matrix P = matrixIdentity(X.getRowSize(), X.getColSize());
-
-  L = matrixIdentity(X.getRowSize(), X.getColSize());
-  U.resizeClear(X.getRowSize(), X.getColSize());
-
+  matrix P = matrixIdentity(XSizeRow, XSizeRow);
   double temp = 0;
-  for (unsigned long i = 1; i <= X.getRowSize(); i++) {
 
-    // perform LU decomposition pivoting
-    T1 = R(i, X.getRowSize(), 1, X.getColSize());
-    T3 = matrixMathsAbsMax(T1, T2);
-    R = matrixCellOperationsSwapRows(R, i, T3(1, i) + (1 * (i-1)));
-    P = matrixCellOperationsSwapRows(P, i, T3(1, i) + (1 * (i-1)));
+  if (XSizeRow == XSizeCol) {
+    L = matrixIdentity(XSizeRow, XSizeCol);
+    U.resizeClear(XSizeRow, XSizeCol);
+  }
+  else if (XSizeRow > XSizeCol) {
+    L = matrixIdentity(XSizeRow, XSizeCol);
+    U.resizeClear(XSizeCol, XSizeCol);
+  }
+  else if(XSizeRow < XSizeCol) {
+    L = matrixIdentity(XSizeRow, XSizeRow);
+    U.resizeClear(XSizeRow, XSizeCol);
+  }
+
+  for (unsigned long i = 1; i <= XSizeRow; i++) {
+    if (i < XSizeRow) {
+      T1 = R(i, XSizeRow, 1, XSizeCol);
+      T3 = matrixMathsAbsMax(T1, T2);
+      R = matrixCellOperationsSwapRows(R, i, T3(1, i) + (i-1));
+      P = matrixCellOperationsSwapRows(P, i, T3(1, i) + (i-1));
+    }
 
     // compute LU decomposition
-    for (unsigned long j = 1; j <= X.getColSize(); j++) {
+    for (unsigned long j = 1; j <= XSizeCol; j++) {
       temp = 0;
 
       // check for lower triangle matrix indices
       if (j < i) {
-        for (unsigned long k = 1; k <= X.getColSize(); k++)
+        for (unsigned long k = 1; k <= XSizeRow; k++)
           temp += L(i, k) * U(k, j);
         // determine L elements
         L(i, j) = (R(i, j) - temp) / U(j, j);
@@ -78,10 +100,9 @@ matrix matrixDecompositionLU(const matrix &X, matrix & L, matrix & U) {
       temp = 0;
       // check for upper triangle matrix indices
       if (j >= i) {
-        for (unsigned long k = 1; k <= X.getColSize(); k++)
+        for (unsigned long k = 1; k <= XSizeRow; k++)
           temp += L(i, k) * U(k, j);
-        // determine U elements
-        U(i, j) = (R(i, j) - temp) / L(i, i);
+        U(i, j) = (R(i, j) - temp);
       }
     }
   }
@@ -96,18 +117,27 @@ matrix matrixDecompositionLU(const matrix &X, matrix & L, matrix & U) {
  * @param R                     - Resultant R matrix.
  */
 void matrixDecompositionQR(const matrix & X, matrix & Q, matrix & R) {
+  unsigned long XSizeCol = X.getColSize();
+  unsigned long XSizeRow = X.getRowSize();
+  unsigned long minSize = XSizeCol < XSizeRow ? XSizeCol : XSizeRow;
+
   matrix M = X;
-  Q.resizeClear(X.getRowSize(), X.getRowSize());
-  R.resizeClear(X.getRowSize(), X.getColSize());
+  Q.resizeClear(XSizeRow, XSizeRow);
+  R.resizeClear(XSizeRow, XSizeCol);
 
-  for (unsigned long i = 1; i <= X.getColSize(); i++) {
-    R(i, i) = matrixMathsVectorSquareRoot(M(1, X.getRowSize(), i, i));
-    Q(1, i, M(1, X.getRowSize(), i, i) / R(i, i));
+  for (unsigned long i = 1; i <= minSize; i++) {
+    R(i, i) = matrixMathsVectorSquareRoot(M(1, XSizeRow, i, i));
+    Q(1, i, M(1, XSizeRow, i, i) / R(i, i));
 
-    for (unsigned long j = i + 1; j <= X.getColSize(); j++) {
-      R(i, j) = matrixMathsVectorSum(matrixCellOperationsMultiply(Q(1, X.getRowSize(), i, i), M(1, X.getRowSize(), j, j)));
-      M(1, j, M(1, X.getRowSize(), j, j) - Q(1, X.getRowSize(), i, i) * R(i, j));
+    for (unsigned long j = i + 1; j <= XSizeCol; j++) {
+      R(i, j) = matrixMathsVectorSum(matrixCellOperationsMultiply(Q(1, XSizeRow, i, i), M(1, XSizeRow, j, j)));
+      M(1, j, M(1, XSizeRow, j, j) - Q(1, XSizeRow, i, i) * R(i, j));
     }
+  }
+
+  if (XSizeRow > XSizeCol) {
+    Q.resizeRetain(XSizeRow, XSizeCol);
+    R.resizeRetain(XSizeCol, XSizeCol);
   }
 }
 

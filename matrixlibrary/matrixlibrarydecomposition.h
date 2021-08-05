@@ -21,13 +21,20 @@
  *                                        matrixlibrarycelloperations, and
  *                                        matrixlibrarymaths
  *
+ * Version:     1.0.3
+ * Date:        2021/08/05 (YYYY/MM/DD)
+ * Change Log:  1. Improved the function "matrixDecompositionLU()" to allow decomposition of non
+ *                 sqaure matrix.
+ *              2. Resolve a bug when perfomring matrixDecompositionQR()" on a [M x N] non square
+ *                 matrix where M < N.
+ *
  * Version:     1.0.2
  * Date:        2021/08/04 (YYYY/MM/DD)
  * Change Log:  1. Added the function "matrixDecompositionLU()".
  *
  * Version:     1.0.1
  * Date:        2021/07/30 (YYYY/MM/DD)
- * Change Log:  1. Modified the "matrixDecompositionQR" function to compute the QR for non squared
+ * Change Log:  1. Modified the "matrixDecompositionQR" function to compute the QR for non square
  *                 matrix.
  *
  * Version:     1.0.0
